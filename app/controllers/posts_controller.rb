@@ -10,11 +10,13 @@ class PostsController < ApplicationController
   # GET /posts/1
   # GET /posts/1.json
   def show
+    # notice the set_post method called in the before_action above
   end
 
   # GET /posts/new
   def new
     @post = Post.new
+    # this doesn't go to the database, it is just saved to memory
   end
 
   # GET /posts/1/edit
@@ -29,6 +31,7 @@ class PostsController < ApplicationController
     respond_to do |format|
       if @post.save
         format.html { redirect_to @post, notice: 'Post was successfully created.' }
+        # redirect to show page if successful
         format.json { render :show, status: :created, location: @post }
       else
         format.html { render :new }
@@ -57,6 +60,11 @@ class PostsController < ApplicationController
     @post.destroy
     respond_to do |format|
       format.html { redirect_to posts_url, notice: 'Post was successfully destroyed.' }
+      # flash is a hash where the data persists like in a session for exactly
+      # one request after the current request
+      # you can just put flash[:attribute] = value, but two very common
+      # attributes are :notice (good) and :alert (bad), so common in fact that
+      # redirect takes these two keys as arguments
       format.json { head :no_content }
     end
   end
@@ -67,8 +75,11 @@ class PostsController < ApplicationController
       @post = Post.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
     def post_params
+      # Used when doing mass updates.
+      # post_params sanitizes our params
+      # rails enforces the use of strong params. attributes are
+      # considered guilty till proven innocent.
       params.require(:post).permit(:title, :content)
     end
 end
