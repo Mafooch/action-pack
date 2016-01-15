@@ -1,4 +1,13 @@
+<!-- by default rails form_for helper uses POST method for all it's form unlike
+a regular HTML for which uses GET. This makes sense since with a get request
+we could see all the params passed in the URL so sensitive info like passwords
+would be exposed to someone standing over your shoulder! with post it's in the
+request body not parameters.
+Also, anything modifying data on the server should be a POST not GET -->
 <%= form_for(@post) do |f| %>
+<!-- if object (the @post in this case) has been persisted before the form_for
+helper will give an update action, otherwise it generates a form that submits
+to a create action -->
   <% if @post.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</h2>
@@ -12,14 +21,21 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :title %><br>
-    <%= f.text_field :title %>
+    <!-- f block parameter refers to the @post object. we pass in the attribute of
+    that object -->
+    <%= f.label :title, "Heading" %><br>
+    <!-- can customize label to be shown by passing in a string as second param  -->
+    <%= f.text_field :title, placeholder: "Have a great title?" %>
+    <!-- generates input type="text". could specify placeholder -->
   </div>
   <div class="field">
     <%= f.label :content %><br>
-    <%= f.text_area :content %>
+    <%= f.text_area :content, size: "10x3" %>
+    <!-- similar to text_field but it will have a size (default: 40 cols X 20 rows) -->
   </div>
   <div class="actions">
     <%= f.submit %>
+    <!-- if you don't specify anything it will use the object and action to
+    generate the appropriate text for the submit button -->
   </div>
 <% end %>
